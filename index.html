@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pasture — Rest in His Presence</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --cream:#faf5ee;--parchment:#f2e8d5;--warm-white:#fdfaf5;
+  --sage:#8aab85;--sage-light:#b5cdb2;--sage-dark:#4e7a56;--moss:#3d5e3f;
+  --earth:#8b6b4a;--earth-light:#c49a72;--blush:#e8b89a;
+  --gold:#d4a853;--gold-light:#f0d090;
+  --text:#2e2318;--text-mid:#6b5240;--text-soft:#9c8070;
+  --shadow:rgba(60,40,20,0.12);--season-color:#4e7a56;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* BG */
+.scene-bg{position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,#ddeefa 0%,#eaf4f8 30%,#f5ede0 65%,#e8dcc8 100%);transition:background 2s ease}
+.sun{position:fixed;top:40px;right:80px;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,#ffe08a 40%,#ffd060 70%,rgba(255,210,80,0) 100%);box-shadow:0 0 40px 20px rgba(255,220,80,0.25);z-index:1;animation:sunFloat 8s ease-in-out infinite}
+@keyframes sunFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.cloud{position:fixed;z-index:1;background:rgba(255,255,255,0.82);border-radius:50px;filter:blur(2px)}
+.cloud::before,.cloud::after{content:'';position:absolute;background:rgba(255,255,255,0.82);border-radius:50%}
+.cloud-1{width:120px;height:38px;top:60px;left:8%;animation:cloudDrift 28s linear infinite}
+.cloud-1::before{width:60px;height:55px;top:-28px;left:18px}
+.cloud-1::after{width:45px;height:40px;top:-20px;left:55px}
+.cloud-2{width:90px;height:28px;top:90px;left:35%;animation:cloudDrift 38s linear infinite 10s;opacity:.7}
+.cloud-2::before{width:45px;height:40px;top:-20px;left:12px}
+.cloud-2::after{width:35px;height:30px;top:-15px;left:42px}
+.cloud-3{width:100px;height:32px;top:50px;left:60%;animation:cloudDrift 32s linear infinite 5s;opacity:.6}
+.cloud-3::before{width:50px;height:46px;top:-24px;left:15px}
+.cloud-3::after{width:40px;height:36px;top:-18px;left:50px}
+@keyframes cloudDrift{from{transform:translateX(-200px)}to{transform:translateX(calc(100vw + 200px))}}
+.ground{position:fixed;bottom:0;left:0;right:0;height:42%;background:linear-gradient(180deg,#c8d8a0 0%,#a8bc78 30%,#8aa058 100%);border-radius:60% 60% 0 0/20% 20% 0 0;z-index:1;transition:background 2s ease}
+.ground::before{content:'';position:absolute;top:0;left:0;right:0;height:18px;background:linear-gradient(90deg,#9ab86a,#b8d080,#88a858,#c0d890,#90b060,#b0cc70);border-radius:inherit}
+
+/* LAYOUT */
+.app{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 16px 60px}
+
+/* HEADER */
+header{text-align:center;padding:22px 0 6px}
+.app-title{font-family:'Lora',serif;font-size:2rem;font-weight:700;color:var(--moss);letter-spacing:.02em;line-height:1.1}
+.app-title span{color:var(--earth);font-style:italic}
+.app-subtitle{font-family:'Lora',serif;font-style:italic;font-size:.86rem;color:var(--text-soft);margin-top:3px}
+.season-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.7);border:1.5px solid var(--season-color);border-radius:20px;padding:4px 14px;margin-top:7px;font-size:.75rem;font-weight:800;color:var(--season-color);letter-spacing:.04em;text-transform:uppercase;transition:all .5s}
+
+/* GARDEN */
+.garden{width:100%;max-width:500px;height:190px;position:relative;margin:6px 0 0}
+.sheep-wrap{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:5;animation:sheepBob 4s ease-in-out infinite}
+@keyframes sheepBob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-5px)}}
+.sheep-svg{width:95px;height:auto}
+.fruit-plant{position:absolute;bottom:8px;display:flex;flex-direction:column;align-items:center}
+.plant-stem{width:4px;background:linear-gradient(180deg,var(--sage-dark),var(--moss));border-radius:4px}
+.plant-leaves{position:relative;width:38px;height:28px;margin-bottom:-4px}
+.leaf{position:absolute;width:20px;height:13px;border-radius:50% 50% 50% 0;background:var(--sage);opacity:0;transition:opacity .8s,transform .8s}
+.leaf.left{left:0;top:7px;transform:rotate(-40deg) scaleX(0)}
+.leaf.right{right:0;top:7px;transform:rotate(40deg) scaleX(0) scaleX(-1)}
+.fruit-plant.grown .leaf{opacity:1}
+.fruit-plant.grown .leaf.left{transform:rotate(-40deg) scaleX(1)}
+.fruit-plant.grown .leaf.right{transform:rotate(40deg) scaleX(-1) scaleX(1)}
+.fruit-icon{font-size:1.3rem;opacity:0;transform:scale(0);transition:opacity .6s,transform .6s cubic-bezier(.34,1.56,.64,1);margin-bottom:2px}
+.fruit-plant.grown .fruit-icon{opacity:1;transform:scale(1)}
+.fruit-label{font-size:.56rem;font-weight:700;color:var(--moss);text-transform:uppercase;letter-spacing:.05em;opacity:0;transition:opacity .6s .3s;white-space:nowrap}
+.fruit-plant.grown .fruit-label{opacity:1}
+.plant-0{left:2%}.plant-1{left:13%}.plant-2{left:24%}.plant-3{right:24%}.plant-4{right:13%}.plant-5{right:2%}
+.plant-6{left:50%;transform:translateX(-50%);bottom:52px}.plant-7{left:37%;bottom:44px}.plant-8{right:37%;bottom:44px}
+
+/* CARD */
+.card{background:rgba(253,248,240,.93);backdrop-filter:blur(8px);border:1.5px solid rgba(180,150,100,.2);border-radius:24px;box-shadow:0 8px 40px var(--shadow),0 2px 8px rgba(255,255,255,.8) inset;padding:22px 18px 18px;width:100%;max-width:480px;margin-top:8px}
+
+/* TABS */
+.tabs{display:flex;gap:4px;background:var(--parchment);border-radius:16px;padding:5px;margin-bottom:8px;max-width:480px;width:100%;overflow-x:auto}
+.tab-btn{flex:1;min-width:60px;padding:7px 4px;border-radius:12px;border:none;background:transparent;font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:700;color:var(--text-soft);cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab-btn.active{background:white;color:var(--moss);box-shadow:0 2px 8px var(--shadow)}
+.tab-panel{display:none;width:100%;max-width:480px}
+.tab-panel.active{display:block}
+
+/* COMMON */
+.section-label{font-family:'Lora',serif;font-size:.76rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text-soft);margin-bottom:9px}
+.progress-bar-wrap{background:rgba(180,150,100,.15);border-radius:10px;height:5px;overflow:hidden;margin-top:4px}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--sage-dark),var(--moss));border-radius:10px;transition:width .8s ease}
+
+/* FOCUS TAB */
+.verse-card{background:linear-gradient(135deg,rgba(212,168,83,.12),rgba(140,107,74,.08));border:1px solid rgba(212,168,83,.3);border-radius:16px;padding:12px 15px;margin-bottom:14px;text-align:center}
+.verse-text{font-family:'Lora',serif;font-style:italic;font-size:.84rem;color:var(--text-mid);line-height:1.6}
+.verse-ref{font-size:.71rem;font-weight:700;color:var(--gold);margin-top:4px;letter-spacing:.05em}
+.grace-msg{text-align:center;padding:11px 16px;background:linear-gradient(135deg,rgba(212,168,83,.15),rgba(232,184,154,.15));border-radius:14px;border:1px solid rgba(212,168,83,.25);margin-bottom:12px;display:none}
+.grace-msg.show{display:block;animation:fadeIn .6s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.grace-msg-text{font-family:'Lora',serif;font-style:italic;font-size:.85rem;color:var(--earth);line-height:1.5}
+.grace-msg-icon{font-size:1.3rem;margin-bottom:4px;display:block}
+.modes{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px}
+.mode-btn{flex:1;min-width:70px;padding:8px 4px 7px;border:1.5px solid transparent;border-radius:14px;background:var(--parchment);cursor:pointer;text-align:center;transition:all .25s;font-family:'Nunito',sans-serif}
+.mode-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px var(--shadow)}
+.mode-btn.active{background:var(--moss);border-color:var(--moss);box-shadow:0 4px 16px rgba(61,94,63,.3)}
+.mode-icon{font-size:1.25rem;display:block;margin-bottom:2px}
+.mode-name{font-size:.68rem;font-weight:700;color:var(--text-mid);display:block}
+.mode-btn.active .mode-name{color:#fff}
+.mode-fruit{font-size:.58rem;color:var(--text-soft);display:block;margin-top:1px}
+.mode-btn.active .mode-fruit{color:rgba(255,255,255,.75)}
+.duration-pick{display:flex;gap:6px;justify-content:center;margin-bottom:12px}
+.dur-btn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--sage-light);background:transparent;font-family:'Nunito',sans-serif;font-size:.76rem;font-weight:700;color:var(--text-mid);cursor:pointer;transition:all .2s}
+.dur-btn.active,.dur-btn:hover{background:var(--sage-dark);border-color:var(--sage-dark);color:#fff}
+.timer-section{text-align:center;margin-bottom:16px}
+.timer-ring-wrap{position:relative;width:148px;height:148px;margin:0 auto 11px}
+.timer-ring-wrap svg{transform:rotate(-90deg)}
+.ring-bg{stroke:var(--parchment)}
+.ring-progress{stroke:var(--sage-dark);stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+.timer-display{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.timer-time{font-family:'Lora',serif;font-size:2.1rem;font-weight:700;color:var(--moss);line-height:1}
+.timer-phase{font-size:.68rem;color:var(--text-soft);margin-top:3px;font-weight:600}
+.timer-controls{display:flex;gap:9px;justify-content:center}
+.btn-main{padding:11px 30px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--sage-dark),var(--moss));color:#fff;font-family:'Nunito',sans-serif;font-size:.92rem;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(61,94,63,.35);transition:all .25s}
+.btn-main:hover{transform:translateY(-2px)}
+.btn-secondary{padding:11px 16px;border-radius:50px;border:1.5px solid var(--earth-light);background:transparent;color:var(--earth);font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .25s}
+.btn-secondary:hover{background:var(--parchment)}
+.pause-msg{font-size:.74rem;text-align:center;color:var(--text-soft);font-style:italic;margin-top:7px;font-family:'Lora',serif;display:none}
+.pause-msg.show{display:block}
+.streaks{display:flex;gap:7px;margin-bottom:6px}
+.streak-item{flex:1;background:var(--parchment);border-radius:14px;padding:9px 7px;text-align:center;border:1px solid rgba(180,150,100,.2)}
+.streak-num{font-family:'Lora',serif;font-size:1.45rem;font-weight:700;color:var(--moss);line-height:1}
+.streak-label{font-size:.6rem;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+
+/* SEASONS */
+.seasons-list{display:flex;flex-direction:column;gap:10px}
+.season-card{border-radius:18px;padding:14px;border:1.5px solid transparent;transition:all .3s;position:relative}
+.season-card.locked{background:rgba(180,150,100,.07);border-color:rgba(180,150,100,.18);opacity:.7}
+.season-card.is-active{border-color:var(--season-color);box-shadow:0 4px 18px rgba(0,0,0,.09)}
+.season-card.completed-season{border-color:var(--gold)}
+.season-header{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.season-icon{font-size:1.5rem}
+.season-title{font-family:'Lora',serif;font-size:.95rem;font-weight:700;color:var(--text)}
+.season-subtitle{font-size:.68rem;color:var(--text-soft)}
+.season-lock{margin-left:auto;font-size:.65rem;font-weight:700;color:var(--text-soft);background:rgba(180,150,100,.13);padding:3px 9px;border-radius:20px}
+.season-activate-btn{margin-left:auto;font-size:.68rem;font-weight:800;color:white;background:var(--moss);border:none;padding:4px 11px;border-radius:20px;cursor:pointer}
+.focus-areas{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.focus-area{padding:4px 9px;border-radius:20px;font-size:.66rem;font-weight:700;border:1.5px solid transparent;cursor:pointer;transition:all .2s;user-select:none}
+.focus-area:hover{opacity:.8}
+.focus-area.fa-done{opacity:.55;text-decoration:line-through}
+.unlock-hint{font-size:.68rem;color:var(--text-soft);font-style:italic;font-family:'Lora',serif}
+
+/* WISDOM PATHS */
+.wisdom-book{background:linear-gradient(135deg,#f5ede0,#ede0c8);border-radius:18px;padding:18px;border:1.5px solid rgba(180,150,100,.25);margin-bottom:10px}
+.book-title{font-family:'Lora',serif;font-size:1rem;font-weight:700;color:var(--earth);margin-bottom:3px;display:flex;align-items:center;gap:7px}
+.book-subtitle{font-size:.7rem;color:var(--text-soft);margin-bottom:12px;font-family:'Lora',serif;font-style:italic}
+.path-progress{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.path-pct{font-size:.7rem;font-weight:800;color:var(--moss);white-space:nowrap}
+.chapter-list{display:flex;flex-direction:column;gap:7px}
+.chapter-item{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.6);border:1px solid rgba(180,150,100,.13);cursor:pointer;transition:all .2s}
+.chapter-item:hover{background:rgba(255,255,255,.9);transform:translateX(2px)}
+.chapter-item.ch-done{background:linear-gradient(135deg,rgba(138,171,133,.2),rgba(78,122,86,.06));border-color:var(--sage)}
+.chapter-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--sage-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.68rem;margin-top:1px;transition:all .3s}
+.chapter-item.ch-done .chapter-check{background:var(--sage-dark);border-color:var(--sage-dark);color:white}
+.chapter-ref{font-size:.8rem;font-weight:700;color:var(--text-mid)}
+.chapter-desc{font-size:.68rem;color:var(--text-soft)}
+.chapter-verse{font-family:'Lora',serif;font-style:italic;font-size:.67rem;color:var(--gold);margin-top:2px}
+.path-locked-msg{text-align:center;padding:18px;color:var(--text-soft);font-family:'Lora',serif;font-style:italic;font-size:.82rem}
+
+/* GARDEN TAB */
+.fruit-grid{display:flex;gap:6px;flex-wrap:wrap}
+.fruit-badge{flex:1;min-width:66px;background:var(--parchment);border-radius:12px;padding:8px 5px 7px;text-align:center;border:1.5px solid transparent;transition:all .4s}
+.fruit-badge.unlocked{background:linear-gradient(135deg,rgba(138,171,133,.2),rgba(78,122,86,.08));border-color:var(--sage)}
+.fruit-badge-icon{font-size:1.2rem;display:block;margin-bottom:2px;filter:grayscale(1);opacity:.4;transition:all .4s}
+.fruit-badge.unlocked .fruit-badge-icon{filter:grayscale(0);opacity:1}
+.fruit-badge-name{font-size:.58rem;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.04em}
+.fruit-badge.unlocked .fruit-badge-name{color:var(--moss)}
+.fruit-badge-sessions{font-size:.56rem;color:var(--text-soft);margin-top:2px}
+
+/* GROUP */
+.group-setup{background:var(--parchment);border-radius:16px;padding:16px;margin-bottom:10px}
+.group-input{width:100%;padding:9px 13px;border-radius:12px;border:1.5px solid rgba(180,150,100,.3);background:white;font-family:'Nunito',sans-serif;font-size:.88rem;color:var(--text);outline:none;margin-bottom:8px}
+.group-input:focus{border-color:var(--sage-dark)}
+.group-timer-display{text-align:center;padding:22px 18px;background:linear-gradient(135deg,rgba(78,122,86,.08),rgba(61,94,63,.04));border-radius:16px;border:1.5px solid rgba(78,122,86,.18);margin-bottom:10px}
+.group-time{font-family:'Lora',serif;font-size:3.2rem;font-weight:700;color:var(--moss);line-height:1}
+.group-time-label{font-size:.75rem;color:var(--text-soft);margin-top:5px}
+.group-verse-rotate{font-family:'Lora',serif;font-style:italic;font-size:.8rem;color:var(--text-mid);margin-top:10px;padding:9px;background:rgba(212,168,83,.1);border-radius:10px}
+.member-status{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.member-dot{font-size:.7rem;color:var(--text-soft);display:flex;align-items:center;gap:4px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--sage-dark)}
+.btn-group{padding:10px 24px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--earth),var(--earth-light));color:white;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:800;cursor:pointer;transition:all .25s;box-shadow:0 4px 14px rgba(139,107,74,.3)}
+.btn-group:hover{transform:translateY(-2px)}
+.btn-outline{padding:9px 20px;border-radius:50px;border:1.5px solid var(--sage-dark);background:transparent;color:var(--sage-dark);font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-outline:hover{background:rgba(78,122,86,.08)}
+.group-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.group-mode-row{display:flex;gap:4px;flex-wrap:wrap;margin:8px 0}
+.group-dur-row{display:flex;gap:5px;justify-content:center;margin-bottom:8px}
+
+/* HISTORY */
+.history-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto}
+.history-item{display:flex;align-items:center;gap:9px;padding:8px 11px;background:var(--parchment);border-radius:12px;font-size:.78rem}
+.history-icon{font-size:.95rem}
+.history-detail{flex:1}
+.history-mode{font-weight:700;color:var(--text-mid)}
+.history-time{color:var(--text-soft);font-size:.7rem}
+.history-fruit{font-size:.7rem;color:var(--sage-dark);font-weight:700}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(46,35,24,.5);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--warm-white);border-radius:28px;padding:30px 22px;max-width:350px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:modalPop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes modalPop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.modal-icon{font-size:2.6rem;margin-bottom:9px;display:block}
+.modal-title{font-family:'Lora',serif;font-size:1.45rem;font-weight:700;color:var(--moss);margin-bottom:7px}
+.modal-verse{font-family:'Lora',serif;font-style:italic;font-size:.86rem;color:var(--text-mid);line-height:1.6;margin-bottom:5px}
+.modal-verse-ref{font-size:.74rem;font-weight:700;color:var(--gold);margin-bottom:12px}
+.modal-reward{background:linear-gradient(135deg,rgba(212,168,83,.2),rgba(240,208,144,.2));border-radius:12px;padding:9px 13px;margin-bottom:16px;font-size:.81rem;color:var(--earth);font-weight:700}
+.modal-btn{padding:11px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--sage-dark),var(--moss));color:#fff;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(61,94,63,.3)}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--sage-light);border-radius:4px}
+@media(max-width:400px){.modes{gap:3px}.mode-btn{min-width:56px;padding:6px 2px}.app-title{font-size:1.7rem}.garden{height:165px}}
+</style>
+</head>
+<body>
+<div class="scene-bg" id="sceneBg"></div>
+<div class="sun"></div>
+<div class="cloud cloud-1"></div>
+<div class="cloud cloud-2"></div>
+<div class="cloud cloud-3"></div>
+<div class="ground" id="ground"></div>
+
+<div class="app">
+  <header>
+    <div class="app-title">🌿 <span>Pasture</span></div>
+    <div class="app-subtitle">"He makes me lie down in green pastures." — Psalm 23:2</div>
+    <div class="season-badge" id="seasonBadge">📖 Scripture Season</div>
+  </header>
+
+  <!-- Garden Scene -->
+  <div class="garden">
+    <div class="fruit-plant plant-0" id="plant-0"><div class="fruit-icon">❤️</div><div class="plant-leaves"><div class="leaf left"></div><div class="leaf right"></div></div><div class="plant-stem" style="height:36px"></div><div class="fruit-label">Love</div></div>
+    <div class="fruit-plant plant-1" id="plant-1"><div class="fruit-icon">😊</div><div class="plant-leaves"><div class="leaf left"></div><div class="leaf right"></div></div><div class="plant-stem" style="height:31px"></div><div class="fruit-label">Joy</div></div>
+    <div class="fruit-plant plant-2" id="plant-2"><div class="fruit-icon">🕊️</div><div class="plant-leaves"><div class="leaf left"></div><div class="leaf right"></div></div><div class="plant-stem" style="height:34px"></div><div class="fruit-label">Peace</div></div>
+    <div class="fruit-plant plant-3" id="plant-3"><div class="fruit-icon">⏳</div><div class="plant-leaves"><div class="leaf left"></div><div class="leaf right"></div></div><div class="plant-stem" style="height:38px"></div><div class="fruit-label">Patience</div></div>
+    <div class="fruit-plant plant-4" id="plant-4"><div class="fruit-icon">🌸</div><div class="plant-leaves"><div class="leaf left"></div><div class="leaf right"></div></div><div class="plant-stem" style="height:32px"></div><div class="fruit-label">Kindness</div></div>
+    <div class="fruit-plant plant-5" id="plant-5"><div class="fruit-icon">⭐</div><div class="plant-leaves"><div class="leaf left"></div><div class="leaf right"></div></div><div class="plant-stem" style="height:35px"></div><div class="fruit-label">Goodness</div></div>
+    <div class="fruit-plant plant-6" id="plant-6"><div class="fruit-icon">✝️</div><div class="plant-leaves"><div class="leaf left"></div><div class="leaf right"></div></div><div class="plant-stem" style="height:40px"></div><div class="fruit-label">Faithfulness</div></div>
+    <div class="fruit-plant plant-7" id="plant-7"><div class="fruit-icon">🌿</div><div class="plant-leaves"><div class="leaf left"></div><div class="leaf right"></div></div><div class="plant-stem" style="height:30px"></div><div class="fruit-label">Gentleness</div></div>
+    <div class="fruit-plant plant-8" id="plant-8"><div class="fruit-icon">🛡️</div><div class="plant-leaves"><div class="leaf left"></div><div class="leaf right"></div></div><div class="plant-stem" style="height:33px"></div><div class="fruit-label">Self-Control</div></div>
+    <div class="sheep-wrap">
+      <svg class="sheep-svg" viewBox="0 0 110 90" fill="none"><ellipse cx="55" cy="52" rx="30" ry="22" fill="#f0ece0"/><circle cx="38" cy="44" r="16" fill="#f0ece0"/><circle cx="55" cy="40" r="18" fill="#f0ece0"/><circle cx="72" cy="44" r="16" fill="#f0ece0"/><circle cx="45" cy="52" r="14" fill="#f0ece0"/><circle cx="65" cy="52" r="14" fill="#f0ece0"/><circle cx="48" cy="47" r="5" fill="rgba(180,170,150,0.2)"/><circle cx="63" cy="44" r="4" fill="rgba(180,170,150,0.15)"/><rect x="38" y="68" width="7" height="16" rx="3.5" fill="#c49a72"/><rect x="50" y="70" width="7" height="14" rx="3.5" fill="#c49a72"/><rect x="62" y="70" width="7" height="14" rx="3.5" fill="#c49a72"/><rect x="74" y="68" width="7" height="16" rx="3.5" fill="#c49a72"/><rect x="38" y="80" width="7" height="5" rx="2.5" fill="#8b6348"/><rect x="50" y="80" width="7" height="5" rx="2.5" fill="#8b6348"/><rect x="62" y="80" width="7" height="5" rx="2.5" fill="#8b6348"/><rect x="74" y="80" width="7" height="5" rx="2.5" fill="#8b6348"/><ellipse cx="84" cy="46" rx="13" ry="12" fill="#e8dcc8"/><ellipse cx="75" cy="38" rx="5" ry="7" fill="#e8dcc8" transform="rotate(-20 75 38)"/><ellipse cx="93" cy="38" rx="5" ry="7" fill="#e8dcc8" transform="rotate(20 93 38)"/><ellipse cx="75" cy="38" rx="3" ry="5" fill="#f2c4b0" transform="rotate(-20 75 38)"/><ellipse cx="93" cy="38" rx="3" ry="5" fill="#f2c4b0" transform="rotate(20 93 38)"/><circle cx="80" cy="44" r="2.5" fill="#3a2e27"/><circle cx="89" cy="44" r="2.5" fill="#3a2e27"/><circle cx="80.8" cy="43.2" r=".9" fill="white"/><circle cx="89.8" cy="43.2" r=".9" fill="white"/><ellipse cx="84.5" cy="50" rx="3.5" ry="2.5" fill="#f2c4b0"/><circle cx="83.5" cy="50" r="1" fill="#c49a72"/><circle cx="85.5" cy="50" r="1" fill="#c49a72"/><path d="M82 52.5 Q84.5 54.5 87 52.5" stroke="#8b6348" stroke-width="1.2" fill="none" stroke-linecap="round"/><circle cx="80" cy="36" r="5" fill="#f0ece0"/><circle cx="87" cy="34" r="5" fill="#f0ece0"/><circle cx="84" cy="34" r="4.5" fill="#f0ece0"/></svg>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('focus',this)">🌿 Focus</button>
+    <button class="tab-btn" onclick="switchTab('seasons',this)">🍂 Seasons</button>
+    <button class="tab-btn" onclick="switchTab('paths',this)">📖 Paths</button>
+    <button class="tab-btn" onclick="switchTab('garden',this)">🍇 Garden</button>
+    <button class="tab-btn" onclick="switchTab('group',this)">🤝 Group</button>
+    <button class="tab-btn" onclick="switchTab('history',this)">📜 History</button>
+  </div>
+
+  <!-- FOCUS -->
+  <div class="tab-panel active" id="tab-focus">
+    <div class="card">
+      <div class="verse-card"><div class="verse-text" id="verseText">"The Lord is my shepherd; I shall not want."</div><div class="verse-ref" id="verseRef">Psalm 23:1</div></div>
+      <div class="grace-msg" id="graceMsg"><span class="grace-msg-icon" id="graceMsgIcon">🌿</span><div class="grace-msg-text" id="graceMsgText">Welcome back. Grace covers every missed day.</div></div>
+      <div class="section-label">Choose Your Focus</div>
+      <div class="modes">
+        <button class="mode-btn active" onclick="selectMode(0)"><span class="mode-icon">🙏</span><span class="mode-name">Prayer</span><span class="mode-fruit">grows Love</span></button>
+        <button class="mode-btn" onclick="selectMode(1)"><span class="mode-icon">📖</span><span class="mode-name">Scripture</span><span class="mode-fruit">grows Faith</span></button>
+        <button class="mode-btn" onclick="selectMode(2)"><span class="mode-icon">🎵</span><span class="mode-name">Worship</span><span class="mode-fruit">grows Joy</span></button>
+        <button class="mode-btn" onclick="selectMode(3)"><span class="mode-icon">🤫</span><span class="mode-name">Quiet Time</span><span class="mode-fruit">grows Peace</span></button>
+        <button class="mode-btn" onclick="selectMode(4)"><span class="mode-icon">🌸</span><span class="mode-name">Gratitude</span><span class="mode-fruit">grows Kindness</span></button>
+      </div>
+      <div class="section-label">Duration</div>
+      <div class="duration-pick">
+        <button class="dur-btn active" onclick="selectDuration(5,this)">5 min</button>
+        <button class="dur-btn" onclick="selectDuration(10,this)">10 min</button>
+        <button class="dur-btn" onclick="selectDuration(20,this)">20 min</button>
+        <button class="dur-btn" onclick="selectDuration(30,this)">30 min</button>
+      </div>
+      <div class="timer-section">
+        <div class="timer-ring-wrap">
+          <svg width="148" height="148" viewBox="0 0 148 148"><circle class="ring-bg" cx="74" cy="74" r="64" stroke-width="9" fill="none"/><circle class="ring-progress" id="ringProgress" cx="74" cy="74" r="64" stroke-width="9" fill="none" stroke-dasharray="402.1" stroke-dashoffset="0"/></svg>
+          <div class="timer-display"><div class="timer-time" id="timerDisplay">05:00</div><div class="timer-phase" id="timerPhase">Ready when you are</div></div>
+        </div>
+        <div class="pause-msg" id="pauseMsg">🐑 Your sheep is resting... Even when we pause, God remains faithful.</div>
+        <div class="timer-controls">
+          <button class="btn-main" id="mainBtn" onclick="handleMainBtn()">Begin</button>
+          <button class="btn-secondary" id="stopBtn" onclick="stopTimer()" style="display:none">Stop</button>
+        </div>
+      </div>
+      <div class="section-label">Days with the Lord</div>
+      <div class="streaks">
+        <div class="streak-item"><div class="streak-num" id="streakPrayer">0</div><div class="streak-label">Days in Prayer</div></div>
+        <div class="streak-item"><div class="streak-num" id="streakScripture">0</div><div class="streak-label">In Scripture</div></div>
+        <div class="streak-item"><div class="streak-num" id="streakQuiet">0</div><div class="streak-label">Quiet Moments</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEASONS -->
+  <div class="tab-panel" id="tab-seasons">
+    <div class="card">
+      <div class="section-label">Seasons of Focus</div>
+      <p style="font-size:.76rem;color:var(--text-soft);margin-bottom:14px;font-family:'Lora',serif;font-style:italic;">"To everything there is a season, and a time for every purpose." — Ecclesiastes 3:1</p>
+      <div class="seasons-list" id="seasonsList"></div>
+    </div>
+  </div>
+
+  <!-- WISDOM PATHS -->
+  <div class="tab-panel" id="tab-paths">
+    <div class="card">
+      <div class="section-label">Wisdom Paths</div>
+      <p style="font-size:.76rem;color:var(--text-soft);margin-bottom:14px;font-family:'Lora',serif;font-style:italic;">"Your word is a lamp to my feet and a light to my path." — Psalm 119:105</p>
+      <div id="pathsList"></div>
+    </div>
+  </div>
+
+  <!-- GARDEN -->
+  <div class="tab-panel" id="tab-garden">
+    <div class="card">
+      <div class="section-label">Your Fruits of the Spirit</div>
+      <p style="font-size:.76rem;color:var(--text-soft);margin-bottom:12px;font-family:'Lora',serif;font-style:italic;">"But the fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control." — Galatians 5:22-23</p>
+      <div class="fruit-grid" id="fruitGrid"></div>
+    </div>
+  </div>
+
+  <!-- GROUP -->
+  <div class="tab-panel" id="tab-group">
+    <div class="card">
+      <div class="section-label">Study Together</div>
+      <p style="font-size:.76rem;color:var(--text-soft);margin-bottom:14px;font-family:'Lora',serif;font-style:italic;">"For where two or three gather in my name, there am I with them." — Matthew 18:20</p>
+      <div id="groupSection"></div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="tab-panel" id="tab-history">
+    <div class="card">
+      <div class="section-label">Your Journey</div>
+      <div class="history-list" id="historyList"><div style="text-align:center;padding:26px;color:var(--text-soft);font-family:'Lora',serif;font-style:italic;">Your story begins with the first session 🌱</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <span class="modal-icon" id="modalIcon">🌿</span>
+    <div class="modal-title" id="modalTitle">Well done, faithful one!</div>
+    <div class="modal-verse" id="modalVerse"></div>
+    <div class="modal-verse-ref" id="modalVerseRef"></div>
+    <div class="modal-reward" id="modalReward"></div>
+    <button class="modal-btn" onclick="closeModal()">Continue in His Peace ✨</button>
+  </div>
+</div>
+
+<script>
+const MODES=[
+  {name:'Prayer',icon:'🙏',fruit:0,fruitName:'Love'},
+  {name:'Scripture',icon:'📖',fruit:6,fruitName:'Faithfulness'},
+  {name:'Worship',icon:'🎵',fruit:1,fruitName:'Joy'},
+  {name:'Quiet Time',icon:'🤫',fruit:2,fruitName:'Peace'},
+  {name:'Gratitude',icon:'🌸',fruit:4,fruitName:'Kindness'},
+];
+const FRUITS_DEF=[
+  {name:'Love',icon:'❤️',needed:3},{name:'Joy',icon:'😊',needed:3},{name:'Peace',icon:'🕊️',needed:3},
+  {name:'Patience',icon:'⏳',needed:5},{name:'Kindness',icon:'🌸',needed:3},{name:'Goodness',icon:'⭐',needed:4},
+  {name:'Faithfulness',icon:'✝️',needed:3},{name:'Gentleness',icon:'🌿',needed:4},{name:'Self-Control',icon:'🛡️',needed:5},
+];
+const SEASONS_DEF=[
+  {id:'scripture',name:'Scripture Season',icon:'📖',color:'#4e70d4',bg:'rgba(78,112,212,0.09)',subtitle:'Open to all — begin your journey here',unlockAt:0,areas:[{n:'Wisdom',i:'🦉'},{n:'Understanding',i:'💡'},{n:'Knowledge',i:'📚'},{n:'Meditation',i:'🌙'}],howToGrow:'Bible reading sessions, verse reflection, chapter completion'},
+  {id:'prayer',name:'Prayer Season',icon:'🙏',color:'#c04848',bg:'rgba(192,72,72,0.09)',subtitle:'Unlocks after 3 sessions',unlockAt:3,areas:[{n:'Thanksgiving',i:'🙌'},{n:'Intercession',i:'💝'},{n:'Repentance',i:'🕊️'},{n:'Trust',i:'⚓'}],howToGrow:'Prayer time, journaling, guided prayers'},
+  {id:'stillness',name:'Stillness & Rest',icon:'🤫',color:'#3a8ab0',bg:'rgba(58,138,176,0.09)',subtitle:'Unlocks after 8 sessions',unlockAt:8,areas:[{n:'Silence',i:'🌌'},{n:'Trust',i:'🫶'},{n:'Surrender',i:'🌿'},{n:'Peace',i:'🕊️'}],howToGrow:'Quiet time, no-phone prayer, sabbath moments'},
+  {id:'love',name:'Love in Action',icon:'💛',color:'#c07c20',bg:'rgba(192,124,32,0.09)',subtitle:'Unlocks after 15 sessions',unlockAt:15,areas:[{n:'Service',i:'🤲'},{n:'Compassion',i:'💗'},{n:'Forgiveness',i:'🌸'},{n:'Generosity',i:'🎁'}],howToGrow:'Reflection prompts, acts of kindness, gratitude entries'},
+];
+const PATHS_DEF=[
+  {id:'wisdom',name:'Path of Wisdom',icon:'🦉',books:'Proverbs & James',unlockAt:0,desc:'Practical wisdom for daily living.',chapters:[
+    {ref:'Proverbs 1',desc:'The beginning of wisdom',verse:'"The fear of the Lord is the beginning of wisdom." — Prov 1:7'},
+    {ref:'Proverbs 3',desc:'Trust in the Lord',verse:'"Trust in the Lord with all your heart." — Prov 3:5'},
+    {ref:'Proverbs 8',desc:'Wisdom calls aloud',verse:'"Does not wisdom call out?" — Prov 8:1'},
+    {ref:'James 1',desc:'Trials and wisdom',verse:'"If any of you lacks wisdom, ask God." — James 1:5'},
+    {ref:'James 3',desc:'Wisdom from above',verse:'"The wisdom from above is first pure." — James 3:17'},
+  ]},
+  {id:'trust',name:'Path of Trust',icon:'🫶',books:'Psalms',unlockAt:3,desc:'Walk through the Psalms and learn to trust.',chapters:[
+    {ref:'Psalm 23',desc:'The Lord is my shepherd',verse:'"He leads me beside still waters." — Ps 23:2'},
+    {ref:'Psalm 46',desc:'God is our refuge',verse:'"Be still, and know that I am God." — Ps 46:10'},
+    {ref:'Psalm 91',desc:'Shelter of the Most High',verse:'"He who dwells in the shelter of the Most High." — Ps 91:1'},
+    {ref:'Psalm 103',desc:'Bless the Lord, O my soul',verse:'"He forgives all your iniquity." — Ps 103:3'},
+    {ref:'Psalm 139',desc:'You have searched me, Lord',verse:'"You know when I sit and when I rise." — Ps 139:2'},
+  ]},
+  {id:'endurance',name:'Path of Endurance',icon:'⚓',books:'Job & Romans',unlockAt:8,desc:'Find strength through suffering and hope.',chapters:[
+    {ref:'Job 1',desc:"Job's faith tested",verse:'"The Lord gave, and the Lord has taken away." — Job 1:21'},
+    {ref:'Job 38',desc:'God speaks from the storm',verse:'"Where were you when I laid the foundation of the earth?" — Job 38:4'},
+    {ref:'Romans 5',desc:'Suffering produces hope',verse:'"Suffering produces endurance." — Rom 5:3'},
+    {ref:'Romans 8',desc:'More than conquerors',verse:'"All things work together for good." — Rom 8:28'},
+    {ref:'Romans 15',desc:'God of endurance',verse:'"The God of endurance and encouragement." — Rom 15:5'},
+  ]},
+  {id:'hope',name:'Path of Hope',icon:'🌅',books:'Gospels & Revelation',unlockAt:15,desc:'Fix your eyes on Jesus and eternal hope.',chapters:[
+    {ref:'John 14',desc:'I am the way',verse:'"I am the way, the truth, and the life." — John 14:6'},
+    {ref:'John 15',desc:'The vine and branches',verse:'"I am the vine; you are the branches." — John 15:5'},
+    {ref:'Luke 15',desc:'The prodigal son',verse:'"He ran and embraced him." — Luke 15:20'},
+    {ref:'Revelation 21',desc:'All things new',verse:'"Behold, I am making all things new." — Rev 21:5'},
+    {ref:'Revelation 22',desc:'Come, Lord Jesus',verse:'"Come, Lord Jesus!" — Rev 22:20'},
+  ]},
+];
+const VERSES={
+  Prayer:[{text:'"Call to me and I will answer you."',ref:'Jeremiah 33:3'},{text:'"Pray without ceasing."',ref:'1 Thessalonians 5:17'},{text:'"The Lord is near to all who call on him."',ref:'Psalm 145:18'}],
+  Scripture:[{text:'"Your word is a lamp to my feet and a light to my path."',ref:'Psalm 119:105'},{text:'"Man shall not live by bread alone, but by every word of God."',ref:'Luke 4:4'},{text:'"The word of God is living and active."',ref:'Hebrews 4:12'}],
+  Worship:[{text:'"Sing to the Lord a new song."',ref:'Psalm 96:1'},{text:'"Make a joyful noise to the Lord!"',ref:'Psalm 100:1'},{text:'"Let everything that has breath praise the Lord."',ref:'Psalm 150:6'}],
+  'Quiet Time':[{text:'"Be still, and know that I am God."',ref:'Psalm 46:10'},{text:'"He leads me beside still waters."',ref:'Psalm 23:2'},{text:'"In quietness and in trust shall be your strength."',ref:'Isaiah 30:15'}],
+  Gratitude:[{text:'"Give thanks in all circumstances."',ref:'1 Thessalonians 5:18'},{text:'"Oh give thanks to the Lord, for he is good."',ref:'Psalm 107:1'},{text:'"The Lord has done great things for us."',ref:'Psalm 126:3'}],
+};
+const COMPLETION_VERSES=[
+  {text:'"Well done, good and faithful servant."',ref:'Matthew 25:23'},
+  {text:'"Those who hope in the Lord will renew their strength."',ref:'Isaiah 40:31'},
+  {text:'"Draw near to God, and he will draw near to you."',ref:'James 4:8'},
+  {text:'"The Lord your God is with you wherever you go."',ref:'Joshua 1:9'},
+  {text:'"I can do all things through him who strengthens me."',ref:'Philippians 4:13'},
+];
+const REWARDS=['🌟 Psalm collection unlocked in Path of Trust!','🕊️ Dove symbol blooming in your garden!','✝️ New guided reflection available!','🫒 Olive branch symbol unlocked!','📿 New prayer guide unlocked!','🌈 Morning Light visual theme unlocked!','🎶 Worship playlist suggestion unlocked!','📖 New chapter added to your Wisdom Path!'];
+const GRACE_MESSAGES=[{icon:'🐑',text:'Welcome back. Grace covers every missed day.'},{icon:'🌿',text:'Growth continues. He never stopped waiting.'},{icon:'☀️',text:'His mercies are new every morning. Begin again.'},{icon:'🕊️',text:'You are not behind. You are here. That is enough.'},{icon:'✝️',text:'Every return is a homecoming. Welcome.'}];
+const SEASON_THEMES={
+  scripture:{sky:'linear-gradient(180deg,#ddeefa 0%,#eaf4f8 30%,#f5ede0 65%,#e8dcc8 100%)',ground:'linear-gradient(180deg,#c8d8a0 0%,#a8bc78 30%,#8aa058 100%)'},
+  prayer:{sky:'linear-gradient(180deg,#fde8f0 0%,#f8dde8 30%,#f5ede0 65%,#e8dcc8 100%)',ground:'linear-gradient(180deg,#d0c8a0 0%,#bcac78 30%,#a08a58 100%)'},
+  stillness:{sky:'linear-gradient(180deg,#dde8fa 0%,#e0e8f8 30%,#e8ede8 65%,#d8dcc8 100%)',ground:'linear-gradient(180deg,#b0c8d8 0%,#88a8bc 30%,#6890a0 100%)'},
+  love:{sky:'linear-gradient(180deg,#fdeedd 0%,#fae8d0 30%,#f5ede0 65%,#e8dcc8 100%)',ground:'linear-gradient(180deg,#e0c8a0 0%,#ccac78 30%,#b09058 100%)'},
+};
+
+// STATE
+function loadState(){
+  try{const s=localStorage.getItem('pasture_v3');if(s)return JSON.parse(s);}catch(e){}
+  return{
+    fruits:FRUITS_DEF.map(f=>({...f,sessions:0})),
+    seasons:SEASONS_DEF.map(s=>({...s,areas:s.areas.map(a=>({n:a.n,i:a.i,done:false})),unlocked:s.unlockAt===0})),
+    activeSeason:'scripture',
+    paths:PATHS_DEF.map(p=>({...p,chapters:p.chapters.map(c=>({...c,done:false}))})),
+    streaks:{prayer:0,scripture:0,quiet:0},
+    totalSessions:0,history:[],lastVisit:null,rewardsUnlocked:0,group:null,
+  };
+}
+let state=loadState();
+function saveState(){try{localStorage.setItem('pasture_v3',JSON.stringify(state));}catch(e){}}
+
+// TIMER
+let selMode=0,selDur=5,timerInterval=null,secsLeft=0,totalSecs=0,running=false,paused=false;
+const CIRC=402.1;
+
+function selectMode(i){
+  selMode=i;
+  document.querySelectorAll('.mode-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
+  updateVerse();
+}
+function updateVerse(){
+  const pool=VERSES[MODES[selMode].name];
+  const v=pool[Math.floor(Math.random()*pool.length)];
+  document.getElementById('verseText').textContent=v.text;
+  document.getElementById('verseRef').textContent=v.ref;
+}
+function selectDuration(m,btn){
+  selDur=m;
+  document.querySelectorAll('.dur-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(!running){secsLeft=m*60;totalSecs=secsLeft;updateDisp();}
+}
+function handleMainBtn(){
+  if(!running&&!paused)startTimer();
+  else if(running)pauseTimer();
+  else resumeTimer();
+}
+function startTimer(){
+  secsLeft=selDur*60;totalSecs=secsLeft;running=true;paused=false;
+  document.getElementById('mainBtn').textContent='Pause';
+  document.getElementById('stopBtn').style.display='inline-block';
+  document.getElementById('timerPhase').textContent=MODES[selMode].name+' time...';
+  document.getElementById('pauseMsg').classList.remove('show');
+  tick();
+}
+function pauseTimer(){
+  running=false;paused=true;clearInterval(timerInterval);
+  document.getElementById('mainBtn').textContent='Resume';
+  document.getElementById('timerPhase').textContent='Paused — sheep is resting 🐑';
+  document.getElementById('pauseMsg').classList.add('show');
+}
+function resumeTimer(){
+  running=true;paused=false;
+  document.getElementById('mainBtn').textContent='Pause';
+  document.getElementById('timerPhase').textContent=MODES[selMode].name+' time...';
+  document.getElementById('pauseMsg').classList.remove('show');
+  tick();
+}
+function stopTimer(){
+  clearInterval(timerInterval);running=false;paused=false;
+  secsLeft=selDur*60;totalSecs=secsLeft;
+  document.getElementById('mainBtn').textContent='Begin';
+  document.getElementById('stopBtn').style.display='none';
+  document.getElementById('timerPhase').textContent='Ready when you are';
+  document.getElementById('ringProgress').style.strokeDashoffset='0';
+  document.getElementById('pauseMsg').classList.remove('show');
+  updateDisp();
+}
+function tick(){
+  timerInterval=setInterval(()=>{
+    secsLeft--;updateDisp();updateRing();
+    if(secsLeft<=0){clearInterval(timerInterval);completeSession();}
+  },1000);
+}
+function updateDisp(){
+  const m=Math.floor(secsLeft/60),s=secsLeft%60;
+  document.getElementById('timerDisplay').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+function updateRing(){
+  document.getElementById('ringProgress').style.strokeDashoffset=CIRC*(secsLeft/totalSecs);
+}
+
+// COMPLETE
+function completeSession(){
+  running=false;paused=false;
+  document.getElementById('mainBtn').textContent='Begin';
+  document.getElementById('stopBtn').style.display='none';
+  document.getElementById('timerPhase').textContent='Session complete ✨';
+  const mode=MODES[selMode];
+  state.fruits[mode.fruit].sessions++;
+  [3,5,7,8].forEach(i=>{state.fruits[i].sessions+=0.5;});
+  state.totalSessions++;
+  if(selMode===0)state.streaks.prayer++;
+  if(selMode===1)state.streaks.scripture++;
+  if(selMode===3)state.streaks.quiet++;
+  state.history.unshift({mode:mode.name,icon:mode.icon,fruit:mode.fruitName,mins:selDur,time:new Date().toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})});
+  if(state.history.length>50)state.history.pop();
+  state.seasons.forEach(s=>{if(state.totalSessions>=s.unlockAt)s.unlocked=true;});
+  state.lastVisit=Date.now();
+  saveState();
+  growPlants();updateFruitGrid();updateStreaks();renderHistory();renderSeasons();updateSeasonBadge();
+  const reward=state.totalSessions%3===0?REWARDS[Math.min(state.rewardsUnlocked++,REWARDS.length-1)]:null;
+  const cv=COMPLETION_VERSES[Math.floor(Math.random()*COMPLETION_VERSES.length)];
+  document.getElementById('modalIcon').textContent=mode.icon;
+  document.getElementById('modalTitle').textContent=['Well done, faithful one!','Beautiful. He heard you.','Time well spent in His presence.','Your garden grows. ✨','Faithful and present.'][Math.floor(Math.random()*5)];
+  document.getElementById('modalVerse').textContent=cv.text;
+  document.getElementById('modalVerseRef').textContent=cv.ref;
+  document.getElementById('modalReward').textContent=reward||'🌱 '+mode.fruitName+' is growing in your garden!';
+  document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('show');
+  secsLeft=selDur*60;totalSecs=secsLeft;updateDisp();
+  document.getElementById('ringProgress').style.strokeDashoffset='0';
+  document.getElementById('timerPhase').textContent='Ready when you are';
+}
+
+// PLANTS
+function growPlants(){
+  state.fruits.forEach((f,i)=>{
+    const p=document.getElementById('plant-'+i);
+    if(p&&f.sessions>=f.needed)p.classList.add('grown');
+  });
+}
+
+// FRUIT GRID
+function updateFruitGrid(){
+  document.getElementById('fruitGrid').innerHTML=state.fruits.map((f,i)=>{
+    const unlocked=f.sessions>=f.needed;
+    const pct=Math.min(100,Math.round(f.sessions/f.needed*100));
+    return`<div class="fruit-badge ${unlocked?'unlocked':''}"><span class="fruit-badge-icon">${f.icon}</span><div class="fruit-badge-name">${f.name}</div><div class="fruit-badge-sessions">${unlocked?'✨ Blooming':pct+'% grown'}</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div></div>`;
+  }).join('');
+}
+
+// STREAKS
+function updateStreaks(){
+  document.getElementById('streakPrayer').textContent=state.streaks.prayer;
+  document.getElementById('streakScripture').textContent=state.streaks.scripture;
+  document.getElementById('streakQuiet').textContent=state.streaks.quiet;
+}
+
+// HISTORY
+function renderHistory(){
+  const list=document.getElementById('historyList');
+  if(!state.history.length)return;
+  list.innerHTML=state.history.map(h=>`<div class="history-item"><span class="history-icon">${h.icon}</span><div class="history-detail"><div class="history-mode">${h.mode} · ${h.mins} min</div><div class="history-time">${h.time}</div></div><div class="history-fruit">${h.fruit} 🌱</div></div>`).join('');
+}
+
+// SEASON BADGE + THEME
+function updateSeasonBadge(){
+  const s=state.seasons.find(x=>x.id===state.activeSeason)||state.seasons[0];
+  const badge=document.getElementById('seasonBadge');
+  badge.textContent=s.icon+' '+s.name;
+  badge.style.color=s.color;
+  badge.style.borderColor=s.color;
+  const t=SEASON_THEMES[s.id]||SEASON_THEMES.scripture;
+  document.getElementById('sceneBg').style.background=t.sky;
+  document.getElementById('ground').style.background=t.ground;
+}
+
+// SEASONS
+function renderSeasons(){
+  document.getElementById('seasonsList').innerHTML=state.seasons.map((s,si)=>{
+    const isAct=s.id===state.activeSeason;
+    const cls=s.unlocked?(isAct?'is-active':''):'locked';
+    const doneCount=s.areas.filter(a=>a.done).length;
+    const pct=Math.round(doneCount/s.areas.length*100);
+    const areasHTML=s.areas.map((a,ai)=>`<div class="focus-area ${a.done?'fa-done':''}" style="background:${s.bg};border-color:${a.done?s.color:'transparent'};color:${s.color}" onclick="${s.unlocked?`toggleArea(${si},${ai})`:''}">${a.i} ${a.n}${a.done?' ✓':''}</div>`).join('');
+    return`<div class="season-card ${cls}" style="${s.unlocked?'background:'+s.bg:''}">
+      <div class="season-header"><span class="season-icon">${s.icon}</span>
+        <div><div class="season-title">${s.name}</div><div class="season-subtitle">${s.subtitle}</div></div>
+        ${s.unlocked&&!isAct?`<button class="season-activate-btn" onclick="activateSeason('${s.id}')">Set Active</button>`:''}
+        ${!s.unlocked?`<span class="season-lock">🔒 ${s.unlockHint||'Locked'}</span>`:''}
+        ${isAct?`<span style="margin-left:auto;font-size:.68rem;font-weight:800;color:${s.color}">● Active</span>`:''}
+      </div>
+      ${s.unlocked?`<div class="focus-areas">${areasHTML}</div><div class="unlock-hint">Grows through: ${s.howToGrow}</div><div class="progress-bar-wrap" style="margin-top:7px"><div class="progress-bar-fill" style="width:${pct}%;background:${s.color}"></div></div>`:
+      `<div class="unlock-hint">${s.unlockAt>0?'Complete '+s.unlockAt+' sessions to unlock':'Open to all'}</div>`}
+    </div>`;
+  }).join('');
+}
+function toggleArea(si,ai){state.seasons[si].areas[ai].done=!state.seasons[si].areas[ai].done;saveState();renderSeasons();}
+function activateSeason(id){state.activeSeason=id;saveState();renderSeasons();updateSeasonBadge();}
+
+// PATHS
+function renderPaths(){
+  document.getElementById('pathsList').innerHTML=state.paths.map((p,pi)=>{
+    const unlocked=state.totalSessions>=p.unlockAt;
+    const done=p.chapters.filter(c=>c.done).length;
+    const pct=Math.round(done/p.chapters.length*100);
+    if(!unlocked)return`<div class="wisdom-book" style="opacity:.6"><div class="book-title">${p.icon} ${p.name} <span style="font-size:.68rem;color:var(--text-soft);font-family:'Nunito',sans-serif;font-weight:700">🔒 Unlocks at ${p.unlockAt} sessions</span></div><div class="book-subtitle">${p.books}</div><div class="path-locked-msg">Complete ${p.unlockAt} focus sessions to open this path.</div></div>`;
+    return`<div class="wisdom-book"><div class="book-title">${p.icon} ${p.name}</div><div class="book-subtitle">${p.books} — ${p.desc}</div><div class="path-progress"><div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" style="width:${pct}%"></div></div><span class="path-pct">${done}/${p.chapters.length}</span></div><div class="chapter-list">${p.chapters.map((c,ci)=>`<div class="chapter-item ${c.done?'ch-done':''}" onclick="toggleChapter(${pi},${ci})"><div class="chapter-check">${c.done?'✓':''}</div><div><div class="chapter-ref">${c.ref}</div><div class="chapter-desc">${c.desc}</div><div class="chapter-verse">${c.verse}</div></div></div>`).join('')}</div></div>`;
+  }).join('');
+}
+function toggleChapter(pi,ci){state.paths[pi].chapters[ci].done=!state.paths[pi].chapters[ci].done;saveState();renderPaths();}
+
+// GROUP
+let groupInterval=null,groupSecs=0,groupTotal=0,groupRunning=false;
+function renderGroup(){
+  const gs=document.getElementById('groupSection');
+  if(!state.group){
+    gs.innerHTML=`
+      <div class="group-setup">
+        <div class="section-label" style="margin-bottom:7px">Start a Group Session</div>
+        <input class="group-input" id="gNameIn" placeholder="Group name (e.g. Smith Family, Couple Study...)"/>
+        <input class="group-input" id="gM1" placeholder="Your name"/>
+        <input class="group-input" id="gM2" placeholder="Partner / friend name (optional)"/>
+        <input class="group-input" id="gM3" placeholder="Another name (optional)"/>
+        <div style="text-align:center"><button class="btn-group" onclick="createGroup()">🌿 Create Session</button></div>
+      </div>
+      <div class="group-setup" style="background:rgba(78,122,86,.06);border:1.5px dashed var(--sage-light)">
+        <div class="section-label" style="margin-bottom:7px">Join a Session</div>
+        <input class="group-input" id="joinCodeIn" placeholder="Enter room code" style="text-transform:uppercase;letter-spacing:.15em;text-align:center;font-size:1rem;font-weight:800"/>
+        <div style="text-align:center"><button class="btn-outline" onclick="joinGroup()">Join Session</button></div>
+        <div style="font-size:.7rem;color:var(--text-soft);text-align:center;margin-top:7px;font-style:italic">Share your room code with family or friends to study together.</div>
+      </div>`;
+  } else {
+    const g=state.group;
+    const m=Math.floor(groupSecs/60),s=groupSecs%60;
+    const allVerses=Object.values(VERSES).flat();
+    const gv=allVerses[Math.floor(Math.random()*allVerses.length)].text;
+    gs.innerHTML=`
+      <div class="group-timer-display">
+        <div style="font-size:.78rem;font-weight:800;color:var(--text-soft);margin-bottom:4px">${g.name}</div>
+        <div style="font-size:.72rem;color:var(--text-soft);margin-bottom:9px">Room Code: <span style="font-family:'Lora',serif;font-size:.95rem;font-weight:700;color:var(--moss);letter-spacing:.15em">${g.code}</span></div>
+        <div class="group-time" id="groupTimerDisp">${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}</div>
+        <div class="group-time-label">${groupRunning?MODES[g.mode].name+' — studying together...':groupSecs===0?'Session complete ✨':'Ready to begin together'}</div>
+        <div class="group-verse-rotate">${gv}</div>
+        <div class="member-status">${g.members.map(mem=>`<div class="member-dot"><div class="dot"></div>${mem}</div>`).join('')}</div>
+      </div>
+      <div class="group-dur-row">${[5,10,20,30].map(d=>`<button class="dur-btn ${g.duration===d?'active':''}" onclick="setGDur(${d})">${d} min</button>`).join('')}</div>
+      <div class="group-mode-row">${MODES.map((mo,i)=>`<button class="mode-btn ${g.mode===i?'active':''}" style="flex:1;min-width:52px;padding:6px 2px" onclick="setGMode(${i})"><span class="mode-icon" style="font-size:1.1rem">${mo.icon}</span><span class="mode-name" style="font-size:.62rem">${mo.name}</span></button>`).join('')}</div>
+      <div class="group-actions">
+        ${!groupRunning&&groupSecs>0?`<button class="btn-group" onclick="startGroup()">▶ Begin Together</button>`:''}
+        ${groupRunning?`<button class="btn-group" onclick="pauseGroup()">⏸ Pause</button>`:''}
+        ${groupSecs===0?`<button class="btn-group" onclick="resetGroup()">🔄 New Session</button>`:''}
+        <button class="btn-outline" onclick="leaveGroup()">Leave</button>
+      </div>`;
+  }
+}
+function createGroup(){
+  const name=document.getElementById('gNameIn').value.trim()||'Study Group';
+  const m1=document.getElementById('gM1').value.trim()||'You';
+  const m2=document.getElementById('gM2').value.trim();
+  const m3=document.getElementById('gM3').value.trim();
+  const members=[m1,m2,m3].filter(Boolean);
+  const code=Math.random().toString(36).substr(2,5).toUpperCase();
+  state.group={name,code,members,duration:10,mode:0};
+  groupSecs=10*60;groupTotal=groupSecs;
+  saveState();renderGroup();
+}
+function joinGroup(){
+  const code=document.getElementById('joinCodeIn').value.trim().toUpperCase();
+  if(!code){alert('Please enter a room code.');return;}
+  state.group={name:'Shared Session',code,members:['You','Friend'],duration:10,mode:0};
+  groupSecs=10*60;groupTotal=groupSecs;
+  saveState();renderGroup();
+}
+function setGDur(d){if(groupRunning)return;state.group.duration=d;groupSecs=d*60;groupTotal=groupSecs;saveState();renderGroup();}
+function setGMode(i){state.group.mode=i;saveState();renderGroup();}
+function startGroup(){
+  groupRunning=true;
+  groupInterval=setInterval(()=>{
+    groupSecs--;
+    const el=document.getElementById('groupTimerDisp');
+    if(el){const m=Math.floor(groupSecs/60),s=groupSecs%60;el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
+    if(groupSecs<=0){clearInterval(groupInterval);groupRunning=false;renderGroup();}
+  },1000);
+  renderGroup();
+}
+function pauseGroup(){clearInterval(groupInterval);groupRunning=false;renderGroup();}
+function resetGroup(){groupSecs=state.group.duration*60;groupTotal=groupSecs;renderGroup();}
+function leaveGroup(){clearInterval(groupInterval);groupRunning=false;state.group=null;saveState();renderGroup();}
+
+// TABS
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(name==='paths')renderPaths();
+  if(name==='group')renderGroup();
+}
+
+// GRACE
+function checkGrace(){
+  if(!state.lastVisit)return;
+  if((Date.now()-state.lastVisit)/(1000*60*60)>20){
+    const g=GRACE_MESSAGES[Math.floor(Math.random()*GRACE_MESSAGES.length)];
+    document.getElementById('graceMsgIcon').textContent=g.icon;
+    document.getElementById('graceMsgText').textContent=g.text;
+    document.getElementById('graceMsg').classList.add('show');
+  }
+}
+
+// INIT
+function init(){
+  secsLeft=selDur*60;totalSecs=secsLeft;
+  updateDisp();updateVerse();
+  growPlants();updateFruitGrid();updateStreaks();renderHistory();
+  renderSeasons();updateSeasonBadge();checkGrace();
+  if(state.group){groupSecs=state.group.duration*60;groupTotal=groupSecs;}
+}
+init();
+</script>
+</body>
+</html>
